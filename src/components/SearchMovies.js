@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { apiKey } from "../config";
 import MovieCard from "./MovieCard";
 import TvCard from "./TvCard";
@@ -9,6 +9,8 @@ const SearchMovies = () => {
   const [movies, setMovies] = useState();
   const [tv, setTv] = useState();
   const [type, setType] = useState("movie");
+
+  const buttonRef = useRef(null);
 
   function main(e) {
     e.preventDefault();
@@ -36,6 +38,7 @@ const SearchMovies = () => {
 
   const updateTypeChange = (newType) => {
     setType(newType);
+    // buttonRef.current.click();
   };
 
   return (
@@ -53,7 +56,7 @@ const SearchMovies = () => {
           onChange={handleChange}
         />
         <Search type={type} updateTypeChange={updateTypeChange} />
-        <button type="submit" className="button">
+        <button type="submit" className="button" ref={buttonRef}>
           Search
         </button>
       </form>
