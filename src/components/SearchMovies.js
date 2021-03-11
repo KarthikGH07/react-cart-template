@@ -2,14 +2,15 @@ import React, { useState, useRef } from "react";
 import { apiKey } from "../config";
 import MovieCard from "./MovieCard";
 import TvCard from "./TvCard";
-import Search from "./TypeToggle";
+// import Search from "./TypeToggle";
 
 const SearchMovies = () => {
   const [query, setQuery] = useState("");
-  const [movies, setMovies] = useState();
-  const [tv, setTv] = useState();
-  const [type, setType] = useState("movie");
-
+  // const [movies, setMovies] = useState();
+  // const [tv, setTv] = useState();
+  // const [type, setType] = useState("movie");
+  const [fetchedData, setFetchedData] = useState();
+  const [type, setType] = useState("");
   const buttonRef = useRef(null);
 
   function main(e) {
@@ -18,15 +19,12 @@ const SearchMovies = () => {
     // searchMoviesDB();
   }
   const searchMovies = async () => {
-    const url = `https://api.themoviedb.org/3/search/${type}?api_key=${apiKey}&query=${query}&page=1&include_adult=false`;
+    const url = `https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${query}&page=1&include_adult=true`;
 
     try {
       const res = await fetch(url);
       const data = await res.json();
-      console.log(data);
-
-      if (type === "movie") setMovies(data.results);
-      else setTv(data.results);
+      setFetchedData(data.results);
     } catch (err) {
       console.log(err);
     }
@@ -34,11 +32,6 @@ const SearchMovies = () => {
 
   const handleChange = (e) => {
     setQuery(e.target.value);
-  };
-
-  const updateTypeChange = (newType) => {
-    setType(newType);
-    // buttonRef.current.click();
   };
 
   return (
@@ -55,40 +48,27 @@ const SearchMovies = () => {
           value={query}
           onChange={handleChange}
         />
-        <Search type={type} updateTypeChange={updateTypeChange} />
+        {/* <Search type={type} updateTypeChange={updateTypeChange} /> */}
         <button type="submit" className="button" ref={buttonRef}>
           Search
         </button>
       </form>
       <div className="card-list">
-        {type === "movie" ? (
-          movies ? (
-            movies.length === 0 ? (
-              <div className="card">
-                <div className="card-content">
-                  <h3 className="card-title">No Data Found!!</h3>
-                </div>
-              </div>
-            ) : (
-              movies
-                .filter((movie) => movie.poster_path)
-                .map((movie) => {
-                  return <MovieCard key={movie.id} movie={movie} type={type} />;
-                })
-            )
-          ) : null
-        ) : tv ? (
-          tv.length === 0 ? (
+        {fetchedData ? (
+          fetchedData.length === 0 ? (
             <div className="card">
               <div className="card-content">
                 <h3 className="card-title">No Data Found!!</h3>
               </div>
             </div>
           ) : (
-            tv
-              .filter((tv) => tv.poster_path)
-              .map((tv) => {
-                return <TvCard key={tv.id} tv={tv} type={type} />;
+            fetchedData
+              .filter((data) => data.poster_path)
+              .map((data) => {
+                const media_type = data.media_type;
+                return (
+                  <MovieCard key={data.id} movie={data} type={media_type} />
+                );
               })
           )
         ) : null}

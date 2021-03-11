@@ -1,10 +1,13 @@
 import SearchMovies from "./components/SearchMovies";
-import FetchReducer from "./components/FetchReducer";
-
+import DarkMode from "./components/DarkMode";
+import "./styles/DarkMode.css";
 function App() {
   return (
     <div className="container">
-      <h1 className="title">React Movie & TV Search</h1>
+      <div className="Header">
+        <h1 className="title">React Movie & TV Search</h1>
+        <DarkMode />
+      </div>
       <SearchMovies />
     </div>
   );
